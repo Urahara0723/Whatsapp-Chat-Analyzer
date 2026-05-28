@@ -10,38 +10,47 @@ import pandas as pd
 
 st.title("Whatsapp Chat Analyzer")
 
-uploaded_file = st.sidebar.file_uploader("Upload WhatsApp Zip File")
+uploaded_file = st.sidebar.file_uploader(
+    "Upload WhatsApp Zip File"
+)
 
 if uploaded_file is not None:
 
-    # Save uploaded zip temporarily
+    # Save uploaded zip
     with open("chat.zip", "wb") as f:
         f.write(uploaded_file.getbuffer())
 
-    
-    # Extract zip and create folder if not exists
-if not os.path.exists("chat_data"):
-    os.makedirs("chat_data")
+    # Create folder if not exists
+    if not os.path.exists("chat_data"):
+        os.makedirs("chat_data")
 
-# Delete old files
-for file in os.listdir("chat_data"):
-    os.remove(os.path.join("chat_data", file))
+    # Delete old files
+    for file in os.listdir("chat_data"):
+        os.remove(os.path.join("chat_data", file))
 
-# Extract new zip
-with zipfile.ZipFile("chat.zip", 'r') as zip_ref:
-    zip_ref.extractall("chat_data")
+    # Extract zip
+    with zipfile.ZipFile("chat.zip", 'r') as zip_ref:
+        zip_ref.extractall("chat_data")
 
     # Find txt file
     txt_file = None
 
     for file in os.listdir("chat_data"):
+
         if file.endswith(".txt"):
             txt_file = file
             break
 
     # Read txt file
-    with open(f"chat_data/{txt_file}", 'r', encoding='utf-8') as f:
+    with open(
+        f"chat_data/{txt_file}",
+        'r',
+        encoding='utf-8'
+    ) as f:
+
         data = f.read()
+
+    
 
     # Preprocess
     df = preprocessor.preprocess(data)
